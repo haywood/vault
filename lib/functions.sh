@@ -77,8 +77,7 @@ echo "Pulling from $REMOTE in $(pwd)..."
 vault fetch
 vault reset --hard HEAD
 pushd $VAULT_WORK_SPACE/pull
-rm -rf *
-decrypt
+  decrypt
 popd
 git pull file://$VAULT_WORK_SPACE/pull master
 }
@@ -139,15 +138,14 @@ function init {
 echo "Initializing vault repo for $REMOTE in $VAULT_REPO..."
 git clone --bare $REMOTE $VAULT_REPO
 pushd $VAULT_WORK_SPACE/init
-rm -rf *
-git init
-generate_gitignore
-generate_seed
-git add -A
-$GIT commit -m "initialized vault repository"
-encrypt
+  git init
+  generate_gitignore
+  generate_seed
+  git add -A
+  $GIT commit -m "initialized vault repository"
+  encrypt
 popd
-assert_empty $VAULT_REPO || git rm -rf '*' # wipe out whatever is already there
+assert_empty $VAULT_REPO
 add # add the vault file
 vault commit -m "vault: initialized empty vault repository"
 vault push -u origin master
@@ -159,10 +157,10 @@ NAME=$(basename $REMOTE .git) # TODO properly parse URL
 mkdir -p $NAME
 assert_empty $NAME
 pushd $NAME
-set_repo
-git clone --bare $REMOTE $VAULT_REPO
-generate_config
-checkout
+  set_repo
+  git clone --bare $REMOTE $VAULT_REPO
+  generate_config
+  checkout
 popd
 }
 
