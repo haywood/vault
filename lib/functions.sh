@@ -27,6 +27,7 @@ EOF
 
 function generate_gitignore {
 cat > .gitignore <<EOF
+.vault
 .vault.json
 EOF
 }
@@ -42,7 +43,7 @@ EOF
 function load_config {
 FILE=${1:-.vault.json}
 if [ -f $FILE ]; then
-  eval "$(cat .vault.json | jq -r '"set_remote \""+.remote+"\";"')"
+  eval "$(cat .vault.json | jq -r '"REMOTE=\""+.remote+"\";"')"
 else
   echo >&2 'Not a vault repository. No .vault.json file found.'
   exit 1
@@ -118,7 +119,7 @@ $STATUS
 EOF
   exit 1
 fi
-git clean -fdx
+git clean -fd
 for file in $($GIT ls-files); do
   rm $file
 done
@@ -160,22 +161,19 @@ init_success
 }
 
 function clone {
-if [ -e $VAULT_REPO ]; then
-  echo >&2 "Repo already cloned. Skipping..."
-else
-  git clone $REMOTE $VAULT_REPO
-fi
 NAME=$(basename $REMOTE .git) # TODO properly parse URL
 mkdir -p $NAME
 pushd $NAME
 assert_empty
+set_repo
+git clone $REMOTE $VAULT_REPO
 generate_config
 checkout
 popd
 }
 
-function set_remote {
-REMOTE=$1
-true ${REMOTE:?Remote is required}
-VAULT_REPO="$VAULT_ROOT/repos/$REMOTE"
+function set_repo {
+REPO="$(pwd)"
+VAULT_REPO="$REPO/.vault"
+mkdir -p "$VAULT_REPO"
 }

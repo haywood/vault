@@ -13,9 +13,7 @@ fi
 WORKSPACE="$(mktemp -d -t "vault-test-workspace")"
 cd $WORKSPACE
 
-rm -rf $HOME/.vault
 vault init file://$VAULT_TEST
-rm -rf $HOME/.vault
 vault clone file://$VAULT_TEST
 cd vault-test
 vault fetch
@@ -24,8 +22,9 @@ echo 'Hello, World!' > test
 git add test
 git commit -m "testing"
 vault push
-cd ..
-rmdir vault-test
-vault clone file://$VAULT_TEST
-cd vault-test
+[ ! -e test ]
+vault checkout
+cat test
+vault clean
+vault checkout
 cat test

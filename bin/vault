@@ -13,19 +13,20 @@ source $VAULT_LIB/functions.sh
 source $VAULT_LIB/prerequisites.sh
 source $VAULT_LIB/aliases.sh
 
-true ${VAULT_ROOT:="$HOME/.vault"}
-mkdir -p "$VAULT_ROOT/repos"
-
 CMD="$1"
 shift
 
+set_repo
+
 case $CMD in
   init)
-    set_remote "$1"
+    REMOTE="$1"
+    true ${REMOTE:?Remote is required}
     init
     ;;
   clone)
-    set_remote "$1"
+    REMOTE="$1"
+    true ${REMOTE:?Remote is required}
     clone
     ;;
   checkout)
