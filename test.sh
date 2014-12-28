@@ -24,3 +24,8 @@ echo 'Hello, World!' > test
 git add test
 git commit -m "testing"
 vault push
+cd ..
+rmdir vault-test
+vault clone file://$VAULT_TEST
+cd vault-test
+cat test
