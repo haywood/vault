@@ -4,11 +4,10 @@ cd $(dirname $0)
 PATH="$(pwd)/bin:$PATH"
 
 VAULT_TEST="$HOME/vault-test"
-if [ ! -d $VAULT_TEST  ]; then
-  mkdir -p $VAULT_TEST
-  cd $VAULT_TEST
-  git init --bare
-fi
+rm -rf $VAULT_TEST
+mkdir -p $VAULT_TEST
+cd $VAULT_TEST
+git init --bare
 
 WORKSPACE="$(mktemp -d -t "vault-test-workspace")"
 cd $WORKSPACE

@@ -52,16 +52,19 @@ fi
 
 function encrypt {
 echo "Encrypting repo in $(pwd) for $REMOTE..."
-TMP="$(mktemp -d -t vault-enc)"
-VAULT_FILE="$TMP/vault" # file shouldn't exist, as gpg won't want to overwrite it
+VAULT_FILE="$VAULT_WORK_TREE/vault"
+if [ -e $VAULT_FILE ]; then
+  # file shouldn't exist, as gpg won't want to overwrite it
+  rm $VAULT_FILE
+fi
 # TODO read recipients from config
 tar -czf - . | $GPG --encrypt --recipient mreed@gilt.com --output $VAULT_FILE
 }
 
 function decrypt {
 echo "Decrypting repo $REMOTE..."
-$GPG -d $VAULT_REPO/vault | tar -x
-git status
+vault checkout HEAD vault
+$GPG -d $VAULT_WORK_TREE/vault | tar -x
 }
 
 function checkout {
@@ -71,31 +74,25 @@ decrypt
 
 function pull {
 echo "Pulling from $REMOTE in $(pwd)..."
-pushd $VAULT_REPO
-git fetch
-git reset --hard origin/master
-popd
-TMP="$(mktemp -d -t vault-pull)"
-pushd $TMP
+vault fetch
+vault reset --hard HEAD
+mkdir -p $VAULT_WORK_SPACE/pull
+pushd $VAULT_WORK_SPACE/pull
+rm -rf *
 decrypt
 popd
-git pull file://$TMP master
+git pull file://$VAULT_WORK_SPACE/pull master
 }
 
 function add {
 true ${VAULT_FILE:?PROGRAMMER ERROR: VAULT_FILE not set}
 [ -f "$VAULT_FILE" ]
-pushd $VAULT_REPO
-mv $VAULT_FILE vault
-git add vault
-popd
+vault add $VAULT_FILE
 }
 
 function commit {
 VAULT_SHA="$($GIT rev-parse HEAD)"
-pushd $VAULT_REPO
-$GIT commit -m "vault: $VAULT_SHA"
-popd
+vault commit -m "vault: $VAULT_SHA"
 }
 
 function push {
@@ -103,9 +100,7 @@ pull # make sure we are up compatible with latest from server
 encrypt # encrypt our new version of the git database
 add # add the vault file to the shadow repo
 commit # commit the vault file to the shadow repo
-pushd $VAULT_REPO
-git push -u origin master
-popd
+vault push -u origin master
 }
 
 function clean {
@@ -127,7 +122,8 @@ rm -rf .git
 }
 
 function assert_empty {
-find . -maxdepth 0 -empty
+DIR=${1:-.}
+find $DIR -maxdepth 0 -empty
 }
 
 function init_success {
@@ -142,8 +138,10 @@ EOF
 
 function init {
 echo "Initializing vault repo for $REMOTE in $VAULT_REPO..."
-git clone $REMOTE $VAULT_REPO
-pushd $(mktemp -d -t vault-init)
+git clone --bare $REMOTE $VAULT_REPO
+mkdir -p $VAULT_WORK_SPACE/vault-init
+pushd $VAULT_WORK_SPACE/vault-init
+rm -rf *
 git init
 generate_gitignore
 generate_seed
@@ -151,22 +149,20 @@ git add -A
 $GIT commit -m "initialized vault repository"
 encrypt
 popd
-pushd $VAULT_REPO
-assert_empty || git rm -rf '*' # wipe out whatever is already there
+assert_empty $VAULT_REPO || git rm -rf '*' # wipe out whatever is already there
 add # add the vault file
-$GIT commit -m "vault: initialized empty vault repository"
-git push
-popd
+vault commit -m "vault: initialized empty vault repository"
+vault push -u origin master
 init_success
 }
 
 function clone {
 NAME=$(basename $REMOTE .git) # TODO properly parse URL
 mkdir -p $NAME
+assert_empty $NAME
 pushd $NAME
-assert_empty
 set_repo
-git clone $REMOTE $VAULT_REPO
+git clone --bare $REMOTE $VAULT_REPO
 generate_config
 checkout
 popd
@@ -176,4 +172,8 @@ function set_repo {
 REPO="$(pwd)"
 VAULT_REPO="$REPO/.vault"
 mkdir -p "$VAULT_REPO"
+}
+
+function vault {
+  GIT_WORK_TREE="$VAULT_WORK_TREE" GIT_DIR="$VAULT_REPO" $GIT "$@"
 }

@@ -5,6 +5,10 @@
 
 VAULT_INSTALL="$(dirname $0)/.."
 VAULT_LIB="$VAULT_INSTALL/lib"
+VAULT_WORK_SPACE="$(mktemp -d -t vault-work-space)"
+VAULT_WORK_TREE="$VAULT_WORK_SPACE/work-tree"
+mkdir -p "$VAULT_WORK_TREE"
+trap "rm -rf $VAULT_WORK_SPACE" EXIT
 
 shopt -s expand_aliases
 unalias -a # make sure nothing already loaded
