@@ -47,11 +47,7 @@ case $CMD in
     ;;
   fetch)
     load_config
-    # TODO this should fetch from the remote, decrypt,
-    # and then fetch from the managed git repo
-    # the resultant fetch function should then be used
-    # as part of the pull implementation
-    vault fetch
+    fetch
     ;;
   pull)
     load_config

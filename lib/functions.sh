@@ -69,21 +69,30 @@ popd
 }
 
 function checkout {
-echo "Checking out $REMOTE in $(pwd)..."
-decrypt
 if [ ! -e .git ]; then
   # when vault clean is run, we remove .git
+  # also when initting, we may not have a .git
   git init
 fi
+echo "Checking out $REMOTE in $(pwd)..."
+decrypt
 git pull file://$VAULT_WORK_SPACE/content master
 }
 
 function pull {
 echo "Pulling from $REMOTE in $(pwd)..."
-vault fetch
-vault reset FETCH_HEAD
-decrypt
+fetch
 git pull file://$VAULT_WORK_SPACE/content master
+}
+
+function fetch {
+vault fetch # fetch from the server
+# we are throwing away anything already here
+# this is OK, as the vault is just as staging
+# area between the server and the local copy
+vault reset FETCH_HEAD # reset the vault to the server
+decrypt # decrypt the vault
+git fetch file://$VAULT_WORK_SPACE/content # fetch from the decrypted repo
 }
 
 function add {
