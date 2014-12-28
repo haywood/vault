@@ -76,7 +76,6 @@ function pull {
 echo "Pulling from $REMOTE in $(pwd)..."
 vault fetch
 vault reset --hard HEAD
-mkdir -p $VAULT_WORK_SPACE/pull
 pushd $VAULT_WORK_SPACE/pull
 rm -rf *
 decrypt
@@ -139,8 +138,7 @@ EOF
 function init {
 echo "Initializing vault repo for $REMOTE in $VAULT_REPO..."
 git clone --bare $REMOTE $VAULT_REPO
-mkdir -p $VAULT_WORK_SPACE/vault-init
-pushd $VAULT_WORK_SPACE/vault-init
+pushd $VAULT_WORK_SPACE/init
 rm -rf *
 git init
 generate_gitignore
