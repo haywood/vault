@@ -52,34 +52,38 @@ fi
 
 function encrypt {
 echo "Encrypting repo in $(pwd) for $REMOTE..."
-VAULT_FILE="$VAULT_WORK_TREE/vault"
 if [ -e $VAULT_FILE ]; then
   # file shouldn't exist, as gpg won't want to overwrite it
   rm $VAULT_FILE
 fi
 # TODO read recipients from config
-tar -czf - . | $GPG --encrypt --recipient mreed@gilt.com --output $VAULT_FILE
+tar -czf - .git | $GPG --encrypt --recipient mreed@gilt.com --output $VAULT_FILE
 }
 
 function decrypt {
 echo "Decrypting repo $REMOTE..."
 vault checkout HEAD vault
-$GPG -d $VAULT_WORK_TREE/vault | tar -x
+pushd $VAULT_WORK_SPACE/content
+  $GPG -d $VAULT_FILE | tar -x
+popd
 }
 
 function checkout {
 echo "Checking out $REMOTE in $(pwd)..."
 decrypt
+if [ ! -e .git ]; then
+  # when vault clean is run, we remove .git
+  git init
+fi
+git pull file://$VAULT_WORK_SPACE/content master
 }
 
 function pull {
 echo "Pulling from $REMOTE in $(pwd)..."
 vault fetch
-vault reset --hard HEAD
-pushd $VAULT_WORK_SPACE/pull
-  decrypt
-popd
-git pull file://$VAULT_WORK_SPACE/pull master
+vault reset HEAD
+decrypt
+git pull file://$VAULT_WORK_SPACE/content master
 }
 
 function add {
