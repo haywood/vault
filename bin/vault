@@ -19,8 +19,6 @@ mkdir -p "$VAULT_ROOT/repos"
 CMD="$1"
 shift
 
-load_config
-
 case $CMD in
   init)
     set_remote "$1"
@@ -31,26 +29,26 @@ case $CMD in
     clone
     ;;
   checkout)
-    assert_config
+    load_config
     checkout
     ;;
   push)
-    assert_config
+    load_config
     push # push the shadow repo to the remote
     clean
     ;;
   fetch)
-    assert_config
+    load_config
     pushd $VAULT_REPO
     git fetch
     popd
     ;;
   pull)
-    assert_config
+    load_config
     pull
     ;;
   clean)
-    assert_config
+    load_config
     push # defensive push to make sure we don't throw away any changes
     clean
     ;;

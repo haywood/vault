@@ -43,6 +43,9 @@ function load_config {
 FILE=${1:-.vault.json}
 if [ -f $FILE ]; then
   eval "$(cat .vault.json | jq -r '"set_remote \""+.remote+"\";"')"
+else
+  echo >&2 'Not a vault repository. No .vault.json file found.'
+  exit 1
 fi
 }
 
@@ -95,7 +98,6 @@ popd
 }
 
 function push {
-assert_config
 pull # make sure we are up compatible with latest from server
 encrypt # encrypt our new version of the git database
 add # add the vault file to the shadow repo
@@ -121,13 +123,6 @@ for file in $($GIT ls-files); do
   rm $file
 done
 rm -rf .git
-}
-
-function assert_config {
-if [ ! -f .vault.json ]; then
-  echo >&2 'Not a vault repository. No .vault.json file found.'
-  exit 1
-fi
 }
 
 function assert_empty {
