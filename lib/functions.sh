@@ -81,7 +81,7 @@ git pull file://$VAULT_WORK_SPACE/content master
 function pull {
 echo "Pulling from $REMOTE in $(pwd)..."
 vault fetch
-vault reset HEAD
+vault reset FETCH_HEAD
 decrypt
 git pull file://$VAULT_WORK_SPACE/content master
 }
