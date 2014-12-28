@@ -24,6 +24,5 @@ vault push
 [ ! -e test ]
 vault checkout
 cat test
-vault clean
 vault checkout
 cat test

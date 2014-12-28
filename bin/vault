@@ -27,36 +27,41 @@ set_repo
 
 case $CMD in
   init)
+    # Initialize a brand new vault repository at the specified remote.
+    # Also checks out a local unencrypted version when done.
     REMOTE="$1"
     true ${REMOTE:?Remote is required}
     init
     ;;
   clone)
+    # Clone a vault repo from a server and checkout an unencrypted local version.
     REMOTE="$1"
     true ${REMOTE:?Remote is required}
     clone
     ;;
   checkout)
+    # Checkout unencrypted data locally. Does not fetch data from the server.
     load_config
     checkout
     ;;
   push)
+    # Encrypt committed changes, push them to the server, and wipe out local
+    # unencrypted data.
     load_config
     push # push the shadow repo to the remote
     clean
     ;;
   fetch)
+    # Fetch the latest data from the server, decrypting and fetching into
+    # the local, unencrypted repo as well.
     load_config
     fetch
     ;;
   pull)
+    # Fetch data from the remote, decrypt it, and use git pull to
+    # merge it with the local copy.
     load_config
     pull
-    ;;
-  clean)
-    load_config
-    push # defensive push to make sure we don't throw away any changes
-    clean
     ;;
   *)
     usage
