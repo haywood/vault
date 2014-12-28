@@ -42,8 +42,7 @@ EOF
 function load_config {
 FILE=${1:-.vault.json}
 if [ -f $FILE ]; then
-  eval "$(cat .vault.json | jq -r '"REMOTE="+.remote+";"')"
-  set_remote "$REMOTE"
+  eval "$(cat .vault.json | jq -r '"set_remote \""+.remote+"\";"')"
 fi
 }
 
