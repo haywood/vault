@@ -1,7 +1,9 @@
 #!/bin/bash -e
 
 # uncomment to get command tracing from bash
-# set -x
+if [ -n "$DEBUG" ]; then
+  set -x
+fi
 
 VAULT_INSTALL="$(dirname $0)/.."
 VAULT_LIB="$VAULT_INSTALL/lib"

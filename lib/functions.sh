@@ -162,6 +162,8 @@ assert_empty $VAULT_REPO
 add # add the vault file
 vault commit -m "vault: initialized empty vault repository"
 vault push -u origin master
+generate_config
+checkout
 init_success
 }
 
