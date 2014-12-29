@@ -56,7 +56,7 @@ function decrypt {
 echo "Decrypting repo $REMOTE..."
 vault checkout HEAD vault
 pushd $VAULT_WORK_SPACE/content
-  $GPG -d $VAULT_FILE | tar -x
+  $GPG -d $VAULT_FILE | tar -x - .git
 popd
 }
 
