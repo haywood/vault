@@ -35,7 +35,8 @@ case $CMD in
     ;;
   clone)
     # Clone a vault repo from a server and checkout an unencrypted local version.
-    REMOTE="$1"
+    REMOTE=$1
+    CLONE_DIR=$2
     true ${REMOTE:?Remote is required}
     clone
     ;;

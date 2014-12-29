@@ -166,10 +166,10 @@ init_success
 }
 
 function clone {
-NAME=$(basename $REMOTE .git) # TODO properly parse URL
-mkdir -p $NAME
-assert_empty $NAME
-pushd $NAME
+true ${CLONE_DIR:=$(basename $REMOTE .git)} # TODO properly parse URL
+mkdir -p $CLONE_DIR
+assert_empty $CLONE_DIR
+pushd $CLONE_DIR
   set_repo
   git clone --bare $REMOTE $VAULT_REPO
   generate_config
