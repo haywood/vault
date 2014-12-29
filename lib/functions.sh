@@ -155,7 +155,7 @@ pushd $VAULT_WORK_SPACE/init
   generate_gitignore
   generate_seed
   git add -A
-  $GIT commit -m "initialized vault repository"
+  git commit -m "initialized vault repository"
   encrypt
 popd
 assert_empty $VAULT_REPO
@@ -184,5 +184,5 @@ mkdir -p "$VAULT_REPO"
 }
 
 function vault {
-  GIT_WORK_TREE="$VAULT_WORK_TREE" GIT_DIR="$VAULT_REPO" $GIT "$@"
+  GIT_WORK_TREE="$VAULT_WORK_TREE" GIT_DIR="$VAULT_REPO" git "$@"
 }

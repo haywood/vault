@@ -2,4 +2,4 @@
 
 alias pushd="pushd > /dev/null"
 alias popd="popd > /dev/null"
-alias git="$GIT 1>/dev/null"
+alias git="$GIT 1>/dev/null 2>/dev/null"
