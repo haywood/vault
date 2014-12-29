@@ -32,14 +32,6 @@ cat > .gitignore <<EOF
 EOF
 }
 
-function generate_seed {
-# 256 bytres of random data so that the contents of an empty
-# vault repository cannot be guessed easily
-cat > .vault.seed <<EOF
-$(head -c256 /dev/urandom)
-EOF
-}
-
 function load_config {
 FILE=${1:-.vault.json}
 if [ -f $FILE ]; then
@@ -153,7 +145,6 @@ git clone --bare $REMOTE $VAULT_REPO
 pushd $VAULT_WORK_SPACE/init
   git init
   generate_gitignore
-  generate_seed
   git add -A
   git commit -m "initialized vault repository"
   encrypt
