@@ -15,4 +15,4 @@ cd $REPO && git init --bare
 
 cd $WORKSPACE
 
-/bin/bash -e "$@"
+/bin/bash -ex "$@"

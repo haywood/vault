@@ -1,20 +1,21 @@
-mkdir one two
+mkdir a b
 
-cd one
+cd a
 vault init file://$REPO
 
 cd ..
-vault clone file://$REPO two
+vault clone file://$REPO b
 
-cd one
+cd a
 echo foo > bar
 git add bar
 git commit -m "bar"
 vault push
 vault checkout
 
-cd ../two
+cd ../b
 vault pull
 
 cd ..
-diff one/bar two/bar
+[ "foo" = $(cat a/bar) ]
+[ "foo" = $(cat b/bar) ]

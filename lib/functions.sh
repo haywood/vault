@@ -74,7 +74,7 @@ git pull file://$VAULT_WORK_SPACE/content master
 function pull {
 echo "Pulling from $REMOTE in $(pwd)..."
 fetch
-git pull file://$VAULT_WORK_SPACE/content master
+git pull --rebase file://$VAULT_WORK_SPACE/content master
 }
 
 function fetch {
