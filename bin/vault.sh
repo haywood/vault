@@ -7,7 +7,7 @@ fi
 
 VAULT_INSTALL="$(dirname $0)/.."
 VAULT_LIB="$VAULT_INSTALL/lib"
-VAULT_WORK_SPACE="$(mktemp -d -t vault-work-space)"
+VAULT_WORK_SPACE="$(mktemp -d -t vault-work-space.XXX)"
 VAULT_WORK_TREE="$VAULT_WORK_SPACE/work-tree"
 VAULT_FILE="$VAULT_WORK_TREE/vault"
 

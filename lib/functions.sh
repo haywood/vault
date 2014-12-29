@@ -1,5 +1,7 @@
 # Functions for use by the vault script
 
+set -x
+
 function usage {
 cat >&2 <<EOF
 Usage: vault init|clone|push|pull|clean
@@ -44,14 +46,14 @@ if [ -e $VAULT_FILE ]; then
   rm $VAULT_FILE
 fi
 # TODO read recipients from config
-tar -czf - .git | $GPG --encrypt --recipient mreed@gilt.com --output $VAULT_FILE
+tar -czf - .git | $GPG --encrypt --recipient mhr2126@gmail.com --output $VAULT_FILE
 }
 
 function decrypt {
 echo "Decrypting repo $REMOTE..."
 vault checkout HEAD vault
 pushd $VAULT_WORK_SPACE/content
-  $GPG -d $VAULT_FILE | tar -x - .git
+  $GPG -d $VAULT_FILE | tar -xzf - .git
 popd
 }
 

@@ -1,0 +1,8 @@
+Key-Type: default
+Subkey-Type: default
+Name-Real: vault
+Name-Comment: vault test user
+Name-Email: mhr2126@gmail.com
+Expire-Date: 0
+Passphrase: vault
+%commit
