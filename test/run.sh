@@ -13,6 +13,9 @@ if [ -z "$TESTS" ]; then
   TESTS=$TEST_DIR/test_*.sh
 fi
 
-for example in $TESTS; do
-  $TEST_DIR/wrapper.sh $example
+for EXAMPLE in $TESTS; do
+  DIR=$(dirname $EXAMPLE)
+  DIR=$(cd $DIR && pwd -P)
+  FILE=$DIR/$(basename $EXAMPLE)
+  $TEST_DIR/wrapper.sh $FILE
 done
