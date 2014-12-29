@@ -1,10 +1,5 @@
 # Functions for use by the vault script
 
-function not_implemented {
-echo >&2 "The '$CMD' functionality is not yet implemented."
-exit 1
-}
-
 function usage {
 cat >&2 <<EOF
 Usage: vault init|clone|push|pull|clean
