@@ -44,25 +44,17 @@ def push(repo, vault):
 def pull(repo, vault):
 	fetch(repo, vault)
 	oid = origin_master(repo).target
-	print("merging fetched changes into", repo.path)
+	print("checking to see if a merge is required", repo.path)
 	merge_result, _ = repo.merge_analysis(oid)
 	if merge_result & git.GIT_MERGE_ANALYSIS_UP_TO_DATE:
+		print("pull: up to date")
 		return
 	elif merge_result & git.GIT_MERGE_ANALYSIS_FASTFORWARD:
+		print("pull: fast-forwarding")
 		repo.head.set_target(oid)
 		repo.checkout_head()
 	elif merge_result & git.GIT_MERGE_ANALYSIS_NORMAL:
-		repo.merge(oid)
-		if repo.index.conflicts:
-			status = "the following conflicts were encountered\n"
-			for _, ours, _ in repo.index.conflicts:
-				status += "\t" + ours.path + "\n"
-			status += "please resolve them using your resolution strategy of choice."
-# TODO the repo is still in the midst of an incomplete merge when this returns
-			repo.state_cleanup()
-			raise Exception(status)
-		else:
-			commit(repo, "vault: merge", [oid])
+		raise Exception("conflicts encountered during pull. please resolve against origin/master by using git rebase or merge")
 	else:
 		raise Exception("merge analysis returned an unexpected result")
 
