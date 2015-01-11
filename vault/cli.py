@@ -7,6 +7,9 @@ Usage: vault [options] [command]
 	vault fetch
 	vault checkout
 	vault clean
+	vault recipient
+	vault recipient add <key_id_or_email>
+	vault recipient remove <key_id_or_email>
 
 Options:
 	--debug Enable debugging output
