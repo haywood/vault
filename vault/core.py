@@ -49,15 +49,15 @@ def pull(repo, vault):
 	if merge_result & git.GIT_MERGE_ANALYSIS_UP_TO_DATE:
 		return
 	elif merge_result & git.GIT_MERGE_ANALYSIS_FASTFORWARD:
-# TODO need to avoid throwing away work here
-		repo.set_head(oid)
+		repo.head.set_target(oid)
+		repo.checkout_head()
 	elif merge_result & git.GIT_MERGE_ANALYSIS_NORMAL:
 		repo.merge(oid)
 		if repo.index.conflicts:
 			status = "the following conflicts were encountered\n"
 			for _, ours, _ in repo.index.conflicts:
 				status += "\t" + ours.path + "\n"
-			status += "please resolve them using your resolution strategy of choice, and then vault push the result."
+			status += "please resolve them using your resolution strategy of choice."
 # TODO the repo is still in the midst of an incomplete merge when this returns
 			repo.state_cleanup()
 			raise Exception(status)
