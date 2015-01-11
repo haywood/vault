@@ -18,5 +18,5 @@ vault fetch
 git checkout FETCH_HEAD
 
 cd ..
-[ "foo" = $(cat a/bar) ]
-[ "foo" = $(cat b/bar) ]
+[ "foo" = "$(cat a/bar)" ]
+[ "foo" = "$(cat b/bar)" ]

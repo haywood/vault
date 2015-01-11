@@ -17,5 +17,5 @@ cd ../b
 vault pull
 
 cd ..
-[ "foo" = $(cat a/bar) ]
-[ "foo" = $(cat b/bar) ]
+[ "foo" = "$(cat a/bar)" ]
+[ "foo" = "$(cat b/bar)" ]

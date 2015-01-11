@@ -19,10 +19,10 @@ git add bar
 git commit -m "baz"
 ! vault push # fails because of conflict
 
-# resolve the conflict
+git rebase origin/master # begin resolution
 echo baz > bar # overwrite bar
 git add bar # mark bar resolved
-git rebase --continue # continue the rebase
+git rebase --continue # complete resolution
 vault push # push the resolved change
 vault checkout
 
