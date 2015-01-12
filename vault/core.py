@@ -50,9 +50,9 @@ def pull(repo, vault):
 		print("pull: up to date")
 		return
 	elif merge_result & git.GIT_MERGE_ANALYSIS_FASTFORWARD:
-		print("pull: fast-forwarding")
+		print("pull: fast-forwarding", repo.head.name, "to", oid)
+		repo.checkout_tree(repo.get(oid))
 		repo.head.set_target(oid)
-		repo.checkout_head()
 	elif merge_result & git.GIT_MERGE_ANALYSIS_NORMAL:
 		raise Exception("conflicts encountered during pull. please resolve against origin/master by using git rebase or merge")
 	else:
